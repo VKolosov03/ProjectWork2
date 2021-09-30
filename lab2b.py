@@ -1,21 +1,25 @@
 class Rational:
-	__numerator=1
-	__denominator=1
 
 	def __init__(self,numerator,denominator):
-		i=1
-		for i in range(numerator):
-			if not numerator % i and not denominator % i:
-				numerator=numerator/i
-				denominator=denominator/i
-		self.numerator=numerator
-		self.denominator=denominator
+		if denominator!=0 and type(numerator)==int and type(denominator)==int:
+			i=1
+			while i <= numerator or i<= denominator:
+				if not numerator % i and not denominator % i:
+					numerator=numerator/i
+					denominator=denominator/i
+					i=1
+				i=i+1
+			self.numerator=int(numerator)
+			self.denominator=int(denominator)
+		else:
+			self.numerator=1
+			self.denominator=1
 	def show_standart(self):
-		return (numerator+"/"+denominator)
+		return str(self.numerator)+'/'+str(self.denominator)
 
 	def show_float(self):
-		return numerator/denominator
+		return self.numerator/self.denominator
 
-rati=Rational(2,4)
-rati.show_standart()
-rati.show_float()
+rati=Rational(20,0)
+print(rati.show_standart())
+print(rati.show_float())
