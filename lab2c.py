@@ -1,11 +1,11 @@
 class Product:
 
 	def __init__(self,price,description,**dimensions):
-		while type(price)!=float and type(price)!=int:
+		if not isinstance(price,float) and not isinstance(price,int):
 			if price.isdigit():
 				price=float(price)
 			else:
-				price = input("Write correctly: ")
+				raise TypeError
 		self.price=price
 		self.description=description
 		self.dimensions=dimensions
@@ -19,8 +19,10 @@ class Customer:
 		self.mobile_phone=mobile_phone
 
 class Order:
-	total_value=0
-	products_data=customer_data=''
+
+	def __init__(self):
+		self.total_value=0
+		self.products_data=self.customer_data=''
 
 	def show_data(self,customer,**products):
 		self.customer_data=str(customer.surname)+','+str(customer.name)+','+str(customer.patronymic)+','+str(customer.mobile_phone)
@@ -37,7 +39,7 @@ class Order:
 		return str(self.total_value)
 
 smartphone=Product(7000,'New Samsung model',length=16,weight=0.5,size='16 inches')
-apples=Product(100,'Bunch of red apples',length=3,weight=2,size='50 of these things')
+apples=Product('100','Bunch of red apples',length=3,weight=2,size='50 of these things')
 book=Product(350.57,'Last Harry Potter chapter',length=30,weight='1.35',size='300 pages')
 hat=Product(555,'Just a winter hat',length=15,weight=0.333,size='L')
 first_customer=Customer('Kolosov','VLadislav','Dmytrovych',1234567890)

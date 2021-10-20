@@ -1,40 +1,56 @@
 import sys
 
 class File:
-	number_of_charachters=number_of_words=number_of_sentences=0
 
 	def __init__(self,file):
-		try:
-			self.open_file=open(file, 'r')
-		except (IOError,FileNotFoundError):
-			print('Unable to open this file')
-			self.open_file=close()
-			sys.exit()
-		self.text_file=self.open_file.read()
+		self.number_of_charachters=self.number_of_words=self.number_of_sentences=0
+		self.file=file
 
 	def count_charachters(self):
-		self.number_of_charachters=len(self.text_file)
+		try:
+			open_file=open(self.file, 'rt')
+		except (IOError,FileNotFoundError):
+			open_file.close()
+			sys.exit()
+		for line in open_file:
+			for i in line:
+				self.number_of_charachters+=1
+		open_file.close()
 		return self.number_of_charachters
 
 	def count_words(self):
-		self.text_file=self.text_file.replace(' , ',', ')
-		self.text_file=self.text_file.replace(' . ','. ')
-		self.text_file=self.text_file.replace(' ; ','; ')
-		self.text_file=self.text_file.replace(' - ','- ')
-		self.text_file=self.text_file.replace(' ! ','! ')
-		self.text_file=self.text_file.replace(' ? ','? ')
-		self.text_file=self.text_file.replace(' ... ','... ')
-		self.number_of_words=len(self.text_file.split())
+		try:
+			open_file=open(self.file, 'rt')
+		except (IOError,FileNotFoundError):
+			open_file.close()
+			sys.exit()
+		index=''
+		punctuation='.!?,;-()"	: '
+		for line in open_file:
+			for i in line:
+				if i in punctuation:
+					if index not in punctuation:
+						self.number_of_words+=1
+				index=i
+		open_file.close()
 		return self.number_of_words
 
 	def count_sentences(self):
+		try:
+			open_file=open(self.file, 'rt')
+		except (IOError,FileNotFoundError):
+			open_file.close()
+			sys.exit()
+		index=0
 		punctuation='.!?'
-		recurring_symbol=''
-		for line in self.text_file:
-			if line in punctuation:
-				if line!= recurring_symbol:
+		for line in open_file:
+			for i in line:
+				if i in punctuation and index==0:
+					index=1
 					self.number_of_sentences+=1
-			recurring_symbol=line
+				elif i not in punctuation and i!=' ' and i!='	':
+					index=0
+		open_file.close()
 		return self.number_of_sentences
 
 statistic=File('words.txt')
