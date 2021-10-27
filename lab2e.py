@@ -1,29 +1,73 @@
-MIN_GRADE=0
-MAX_GRADE=5
+MIN_VALUE=0
+MAX_VALUE=5
 
-class Student:#геттеров и сеттеров нет
+class Student:
 
 	def __init__(self,surname,name,record_book_number,*grades):
 		self.name=name
 		self.surname=surname
+		self.record_book_number=record_book_number
+		self.grades=grades
+
+	def __str__(self):
+		return self.surname+', '+self.name+', '+str(self.record_book_number)+', grades:'+','.join(str(i) for i in
+		 self.grades)+'; avarage score='+str(self.get_average_score())
+
+	@property
+	def name(self):
+		return self.__name
+
+	@name.setter
+	def name(self,name):
+		if not isinstance(name,str):
+			raise TypeError
+		self.__name = name
+
+	@property
+	def surname(self):
+		return self.__surname
+
+	@surname.setter
+	def surname(self,surname):
+		if not isinstance(surname,str):
+			raise TypeError
+		self.__surname = surname
+
+	@property
+	def record_book_number(self):
+		return self.__record_book_number
+
+	@record_book_number.setter
+	def record_book_number(self,record_book_number):
 		if not isinstance(record_book_number,int):
 			if record_book_number.isdigit():
 				record_book_number=int(record_book_number)
 			else:
 				raise TypeError
-		self.record_book_number=record_book_number
+		if record_book_number<MIN_VALUE:
+			raise RuntimeError
+		self.__record_book_number = record_book_number
+
+	@property
+	def grades(self):
+		return self.__grades
+
+	@grades.setter
+	def grades(self,grades):
+		if not isinstance(grades,tuple):
+				raise TypeError
 		for i in range(len(grades)):
 			if not isinstance(grades[i],float) and not isinstance(grades[i],int):
 				if grades[i].isdigit():
 					grades[i]=float(grades[i])
 				else:
 					raise TypeError
-				if grades[i] < MIN_GRADE or grades[i] > MAX_GRADE:
-					raise RuntimeError
-		self.grades=grades
+			if grades[i] < MIN_VALUE or grades[i] > MAX_VALUE:
+				raise RuntimeError
+		self.__grades = grades
 
 	def get_average_score(self):
-	""" returns student's avarage grade """
+	""" returns student avarage grade """
 
 		return sum(self.grades)/len(self.grades)
 
@@ -33,15 +77,30 @@ MAX_STUDENTS=20
 class Group:
 
 	def __init__(self,*students):
+		self.students=students
+		self.best_students=[['','',0],['','',0],['','',0],['','',0],['','',0]]
+
+	def __str__(self):
+		return '\n'.join(str(i) for i in self.students)
+
+	@property
+	def students(self):
+		return self.__students
+
+	@students.setter
+	def students(self,students):
+		if not isinstance(students,tuple):
+				raise TypeError
 		if len(students)>MAX_STUDENTS and len(students)<MIN_STUDENTS:
 			raise RuntimeError
 		for i in range(len(students)):
+			if not isinstance(students[i],Student):
+				raise TypeError
 			for j in range(len(students)):
-				if students[i].name==students[j].name and students[i].surname==students[j].surname  and i!=j:
+				if (students[i].name==students[j].name and students[i].surname==students[j].surname or
+				 students[i].record_book_number==students[j].record_book_number) and i!=j:
 					raise RuntimeError
-		self.students=students
-		self.best_students=[['','',0],['','',0],['','',0],['','',0],['','',0]]
-		self.all_students=''
+		self.__students = students
 
 	def show_best_students(self):
 	""" returns information about 5 best students that were sorted before """
@@ -58,19 +117,10 @@ class Group:
 					index=1
 				elif index==1:
 					self.best_students[j], previous_student=previous_student,self.best_students[j]
-		output=''
-		for i in range(len(self.best_students)):
-			output=output+' '.join(map(str, self.best_students[i]))+'\n'
-		return output
+		return '\n'.join(','.join(str(item) for item in group) for group in self.best_students)+'\n'
 
-	def show_all_students(self):
-	""" returns information about all students  """
 
-		for i in range(len(self.students)):
-			self.all_students=self.all_students+self.students[i].surname+' '+self.students[i].name+' '+str(self.students[i].get_average_score())+'\n'
-		return self.all_students
-
-student1 = Student("Kolos", "Vlad", "1", 1, 4, 4, 4, 5)
+student1 = Student("Kolos", "Vlad", 1, 1, 4, 4, 4, 5)
 student2 = Student("Kolosov", "Vladik", "2", 5, 5, 5, 5, 5)
 student3 = Student("Kol", "Vladislav", "3", 2, 4, 3, 4, 5)
 student4 = Student("Kolos", "Slava", "4", 5, 5, 4, 2, 5)
@@ -95,4 +145,4 @@ student22 = Student("Kolos", "Emil", "22", 3, 3, 5, 4, 2)
 group = Group(student1, student2, student3, student4, student5, student6, student7, student8, student9, student10, 
 	student11, student12, student13, student14, student15, student16, student17, student18, student19, student20)
 print("Top 5 students:\n"+group.show_best_students())
-print("All students:\n"+group.show_all_students())
+print("All students:\n"+str(group))

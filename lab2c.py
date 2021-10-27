@@ -124,6 +124,9 @@ class Order:
 	def products(self, products):
 		if not isinstance(products, dict):
 			raise TypeError
+		for key in products:
+			if not isinstance(products[key],Product):
+				raise TypeError
 		self.__products = products
 
 	def show_value(self):
