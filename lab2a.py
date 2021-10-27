@@ -1,27 +1,44 @@
+MIN_VALUE=0
+MAX_VALUE=20
+
 class Rectangle:
 
-	def __init__(self):
-		self.width=self.length=0
+	def __init__(self,width=1,length=1):
+		self.__width = width
+		self.__length = length
 
 	def perimeter(self):
-		return 2*(self.width+self.length)
+		return 2*(self.__width+self.__length)
 
 	def area(self):
-		return self.width*self.length
+		return self.__width*self.__length
 
-	def setter(self,width,length):
-		if not isinstance(width,float) or not isinstance(length,float):
+	@property
+	def width(self):
+		return self.__width
+
+	@width.setter
+	def width(self,width):
+		if not isinstance(width,float) and not isinstance(width,int):
 			raise TypeError
-		if width<0 or length <0 or length >20 or width>20:
+		if width<MIN_VALUE or width >MAX_VALUE:
 			raise RuntimeError
-		self.width = width
-		self.length = length
+		self.__width = width
 
-	def getter(self):
-		return (self.width,self.length)
+	@property
+	def length(self):
+		return self.__length
+
+	@length.setter
+	def length(self,length):
+		if not isinstance(length,float) and not isinstance(length,int):
+			raise TypeError
+		if length<MIN_VALUE or length >MAX_VALUE:
+			raise RuntimeError
+		self.__length = length
 
 square=Rectangle()
-
-square.setter(0.1,2.)
-print("width and length: ",square.getter(),"\nperimeter: ",square.perimeter(),"\narea: ",square.area())
+square.width=2
+square.length=1
+print("width and length:",str(square.width)+' '+str(square.length),"\nperimeter: ",square.perimeter(),"\narea: ",square.area())
 

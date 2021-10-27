@@ -1,4 +1,7 @@
-class Student:
+MIN_GRADE=0
+MAX_GRADE=5
+
+class Student:#геттеров и сеттеров нет
 
 	def __init__(self,surname,name,record_book_number,*grades):
 		self.name=name
@@ -15,7 +18,7 @@ class Student:
 					grades[i]=float(grades[i])
 				else:
 					raise TypeError
-				if grades[i] < 0 or grades[i] > 5:
+				if grades[i] < MIN_GRADE or grades[i] > MAX_GRADE:
 					raise RuntimeError
 		self.grades=grades
 
@@ -24,10 +27,13 @@ class Student:
 
 		return sum(self.grades)/len(self.grades)
 
+MIN_STUDENTS=5
+MAX_STUDENTS=20
+
 class Group:
 
 	def __init__(self,*students):
-		if len(students)>20 and len(students)<5:
+		if len(students)>MAX_STUDENTS and len(students)<MIN_STUDENTS:
 			raise RuntimeError
 		for i in range(len(students)):
 			for j in range(len(students)):

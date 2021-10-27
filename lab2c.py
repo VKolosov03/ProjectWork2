@@ -1,14 +1,46 @@
 class Product:
 
 	def __init__(self,price,description,**dimensions):
+		self.price=price
+		self.description=description
+		self.dimensions=dimensions
+
+	def __str__(self):
+		return str(self.price)+','+self.description+','+','.join('='.join(str(item) for item in group) 
+			for group in self.dimensions.items())
+
+	@property
+	def price(self):
+		return self.__price
+
+	@price.setter
+	def price(self,price):
 		if not isinstance(price,float) and not isinstance(price,int):
 			if price.isdigit():
 				price=float(price)
 			else:
 				raise TypeError
-		self.price=price
-		self.description=description
-		self.dimensions=dimensions
+		self.__price = price
+
+	@property
+	def description(self):
+		return self.__description
+
+	@description.setter
+	def description(self,description):
+		if not isinstance(description,str):
+			raise TypeError
+		self.__description = description
+
+	@property
+	def dimensions(self):
+		return self.__dimensions
+
+	@dimensions.setter
+	def dimensions(self,dimensions):
+		if not isinstance(dimensions,dict):
+			raise TypeError
+		self.__dimensions = dimensions
 
 class Customer:
 
@@ -18,25 +50,86 @@ class Customer:
 		self.patronymic=patronymic
 		self.mobile_phone=mobile_phone
 
+	def __str__(self):
+		return self.surname+','+self.name+','+self.patronymic+','+str(self.mobile_phone)
+
+	@property
+	def surname(self):
+		return self.__surname
+
+	@surname.setter
+	def surname(self,surname):
+		if not isinstance(surname,str):
+			raise TypeError
+		self.__surname = surname
+
+	@property
+	def name(self):
+		return self.__name
+
+	@name.setter
+	def name(self,name):
+		if not isinstance(name,str):
+			raise TypeError
+		self.__name = name
+
+	@property
+	def patronymic(self):
+		return self.__patronymic
+
+	@patronymic.setter
+	def patronymic(self,patronymic):
+		if not isinstance(patronymic,str):
+			raise TypeError
+		self.__patronymic = patronymic
+
+	@property
+	def mobile_phone(self):
+		return self.__mobile_phone
+
+	@mobile_phone.setter
+	def mobile_phone(self,mobile_phone):
+		if not isinstance(mobile_phone,int):
+			if mobile_phone.isdigit():
+				mobile_phone=int(mobile_phone)
+			else:
+				raise TypeError
+		self.__mobile_phone = mobile_phone
+
 class Order:
 
-	def __init__(self):
+	def __init__(self,customer,**products):
+		self.customer=customer
+		self.products=products
 		self.total_value=0
-		self.products_data=self.customer_data=''
 
-	def show_data(self,customer,**products):
-		self.customer_data=str(customer.surname)+','+str(customer.name)+','+str(customer.patronymic)+','+str(customer.mobile_phone)
-		for key_products in products:
-			self.products_data=self.products_data+str(products[key_products].price)+','+str(products[key_products].description)
-			for key_dimensions in products[key_products].dimensions:
-				self.products_data=self.products_data+','+str(products[key_products].dimensions[key_dimensions])
-			self.products_data=self.products_data+'\n'
-		return self.customer_data+'\n'+self.products_data
+	def __str__(self):
+		return str(self.customer)+'\n'+'\n'.join(str(key) for key in self.products.values())
 
-	def show_value(self,**products):
-		for key_products in products:
-			self.total_value=self.total_value+products[key_products].price
-		return str(self.total_value)
+	@property
+	def customer(self):
+		return self.__customer
+
+	@customer.setter
+	def customer(self, customer):
+		if not isinstance(customer,Customer):
+			raise TypeError
+		self.__customer = customer
+
+	@property
+	def products(self):
+		return self.__products
+
+	@products.setter
+	def products(self, products):
+		if not isinstance(products, dict):
+			raise TypeError
+		self.__products = products
+
+	def show_value(self):
+		for key_products in self.products:
+			self.total_value=self.total_value+self.products[key_products].price
+		return self.total_value
 
 smartphone=Product(7000,'New Samsung model',length=16,weight=0.5,size='16 inches')
 apples=Product('100','Bunch of red apples',length=3,weight=2,size='50 of these things')
@@ -44,9 +137,9 @@ book=Product(350.57,'Last Harry Potter chapter',length=30,weight='1.35',size='30
 hat=Product(555,'Just a winter hat',length=15,weight=0.333,size='L')
 first_customer=Customer('Kolosov','VLadislav','Dmytrovych',1234567890)
 second_customer=Customer('Sardaryan','Arsen','Artakovych','1234567890')
-first_order=Order()
-second_order=Order()
-print('Info: '+first_order.show_data(first_customer,first_product=smartphone,second_product=apples,third_product=hat)+
-	'\nTotal Value: '+first_order.show_value(first_product=smartphone,second_product=apples,third_product=hat)+'\n')
-print('Info: '+second_order.show_data(second_customer,first_product=smartphone,second_product=book)+
-	'\nTotal Value: '+second_order.show_value(first_product=smartphone,second_product=book))
+first_order=Order(first_customer,first_product=smartphone,second_product=apples,third_product=hat)
+second_order=Order(second_customer,first_product=smartphone,second_product=book)
+print('Info:\n'+str(first_order)+
+	'\nTotal Value: '+str(first_order.show_value())+'\n')
+print('Info:\n'+str(second_order)+
+	'\nTotal Value: '+str(second_order.show_value()))
